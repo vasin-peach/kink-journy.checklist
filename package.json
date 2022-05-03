@@ -1,0 +1,34 @@
+{
+  "name": "bdsm-checklist",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@types/js-cookie": "^3.0.2",
+    "js-cookie": "^3.0.1",
+    "print-js": "^1.6.0",
+    "react": "^17.0.2",
+    "react-cookie": "^4.1.1",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^6.3.0",
+    "react-transition-group": "^4.4.2"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.33",
+    "@types/react-dom": "^17.0.10",
+    "@types/react-transition-group": "^4.4.4",
+    "@vitejs/plugin-react": "^1.0.7",
+    "autoprefixer": "^10.4.5",
+    "postcss": "^8.4.13",
+    "postcss-import": "^14.1.0",
+    "postcss-nested": "^5.0.6",
+    "postcss-nesting": "^10.1.4",
+    "tailwindcss": "^3.0.24",
+    "typescript": "^4.5.4",
+    "vite": "^2.9.0"
+  }
+}

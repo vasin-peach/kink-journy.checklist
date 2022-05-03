@@ -1,0 +1,87 @@
+.button-pill {
+  @apply rounded-full font-bold;
+  box-shadow: 1px 1px 15px #d9d9d9;
+  padding: 10px 50px;
+  color: theme("colors.primary");
+  transition: box-shadow 0.3s ease-out;
+
+  &:hover {
+    box-shadow: 1px 1px 15px #eee;
+  }
+}
+
+.text-pill {
+  @apply rounded-full;
+  box-shadow: 1px 1px 15px #d9d9d9;
+  padding: 10px 15px;
+  min-width: 250px;
+  position: relative;
+}
+
+.text-pill-icon {
+  color: theme("colors.primary");
+  position: absolute;
+  font-size: 50px;
+  bottom: -16px;
+  right: 10px;
+}
+
+.radio-pill {
+  position: relative;
+
+  input {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    left: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    opacity: 0;
+    cursor: pointer;
+
+    &:checked ~ .checkmark {
+      background-image: url("../../images/checked.svg");
+    }
+    &:checked ~ .checkmark:after {
+      display: block;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 25px;
+    width: 25px;
+    background-image: url("../../images/unchecked.svg");
+    background-size: cover;
+    transition: background-image 0.3s ease-out;
+
+    &:after {
+      content: "" !important;
+      position: absolute;
+      display: none;
+      left: 12px;
+      top: -2px;
+      width: 12px;
+      height: 22px;
+      border: solid #d03f51;
+      border-width: 0 5px 5px 0;
+      border-radius: 15px;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  }
+
+  &:hover input:not(:disabled) ~ .checkmark {
+    background-image: url("../../images/checked.svg");
+  }
+}

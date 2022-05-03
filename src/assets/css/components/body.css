@@ -1,0 +1,6 @@
+.perfect-center {
+  height: calc(100% - 56px) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

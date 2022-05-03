@@ -1,0 +1,12 @@
+.summary-container {
+  table,
+  th,
+  td {
+    border: 1px solid #ccc;
+  }
+
+  td,
+  th {
+    padding: 5px 15px;
+  }
+}
