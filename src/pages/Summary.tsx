@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import bdsmCheckScene from "../assets/data/bdsm-check.scene.json";
 import printJS from "print-js";
+import { Helmet } from "react-helmet";
 
 const Summary: React.FC = () => {
   /* -------------------------------------------------------------------------- */
@@ -57,6 +58,9 @@ const Summary: React.FC = () => {
 
   return (
     <div className="p-5 summary-container container mx-auto flex items-center flex-col">
+      <Helmet>
+        <title>Kinky Journy: ผลลัพธ์แบบประเมิน ({cookies.NAME || "N/A"})</title>
+      </Helmet>
       <div className="summary-content" id="summary-content">
         <div className="mb-5">
           <div className="font-bold text-xl text-center">

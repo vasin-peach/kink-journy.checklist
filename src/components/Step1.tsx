@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import bdsmCheckData from "../assets/data/bdsm-check.data.json";
+import { Helmet } from "react-helmet";
 
 interface IBdsmCheck {
   id: string | number;
@@ -53,6 +54,9 @@ const Step1 = () => {
 
   return (
     <div className="step1-container">
+      <Helmet>
+        <title>Kinky Journy: 1.แบบประเมินรสนิยมทางเพศของตัวเอง</title>
+      </Helmet>
       <div className="checklist-header mb-5">
         <div className="font-bold text-xl text-center">
           1. แบบประเมินรสนิยมทางเพศของตัวเอง

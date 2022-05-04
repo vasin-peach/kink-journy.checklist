@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import bdsmCheckScene from "../assets/data/bdsm-check.scene.json";
+import { Helmet } from "react-helmet";
 
 interface IBdsmCheckScene {
   id: string | number;
@@ -62,12 +63,11 @@ const Step2 = () => {
     setSelectData(t);
   }, [page]);
 
-  useEffect(() => {
-    console.log(cookies);
-  }, []);
-
   return (
     <div className="step1-container">
+      <Helmet>
+        <title>Kinky Journy: 2.รูปแบบการเพลย์ที่เคยทำมาก่อน</title>
+      </Helmet>
       <div className="checklist-header mb-5">
         <div className="font-bold text-xl text-center">
           2. รูปแบบการเพลย์ที่เคยทำมาก่อน
