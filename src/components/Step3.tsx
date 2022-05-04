@@ -83,10 +83,10 @@ const Step3 = () => {
         <table className="table-auto w-full border border-collapse border-slate-500">
           <thead>
             <tr>
+              <th style={{ width: "50px" }}></th>
               <th></th>
-              <th></th>
-              <th>อยากลอง</th>
-              <th>ไม่อยากลอง</th>
+              <th style={{ width: "100px" }}>อยากลอง</th>
+              <th style={{ width: "100px" }}>ไม่อยากลอง</th>
             </tr>
           </thead>
           <tbody>
