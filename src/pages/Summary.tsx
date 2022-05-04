@@ -56,14 +56,14 @@ const Summary: React.FC = () => {
   }, []);
 
   return (
-    <div className="summary-container container mx-auto perfect-center flex-col">
+    <div className="p-5 summary-container container mx-auto flex items-center flex-col">
       <div className="summary-content" id="summary-content">
         <div className="mb-5">
           <div className="font-bold text-xl text-center">
             ผลลัพธ์แบบประเมินรสนิยม BDSM
           </div>
         </div>
-        <table className="table-auto border">
+        <table className="table-auto border mx-auto">
           <tbody>
             <tr>
               <td>
@@ -109,6 +109,25 @@ const Summary: React.FC = () => {
             </tr>
           </tbody>
         </table>
+
+        <div className="mt-10 mx-auto">
+          <div className="font--bold text-xl mx-auto">
+            BDSM
+            เป็นเรื่องรสนิยมส่วนตัวซึ่งเปลี่ยนแปลงได้ขึ้นกับสภาพปัจจัยทั้งภายนอกภายใน
+            ในวันข้างหน้าที่คุณกลับมาทำแบบประเมินนี้อีกครั้ง
+            อาจจะทำให้แปลกใจก็เป็นได้
+          </div>
+          <div className="font--bold text-xl mx-auto">
+            สนใจอยากรู้เพิ่ม ติดตาม{" "}
+            <a
+              href="https://twitter.com/inner_taboo"
+              className="text-primary"
+              target="_blank"
+            >
+              @inner_taboo
+            </a>
+          </div>
+        </div>
       </div>
       <button
         type="button"

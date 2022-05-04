@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Landing: React.FC = () => {
   return (
     <div className="h-full">
-      <div className="container mx-auto landing-container text-center perfect-center">
+      <div className="p-5 container mx-auto landing-container text-center perfect-center">
         <div className="wrapper">
           <div className="brand">
             <div className="text-9xl">BDSM</div>
@@ -15,9 +15,8 @@ const Landing: React.FC = () => {
 
           <div className="text text-2xl mt-10">
             <span>
-              ยินดีต้อนรับสู่แบบประเมินรสนิยมทางเพศแนว
-              <br />
-              BDSM ซึ่งจะช่วยให้คุณเข้าใจตัวคุณเองมากขึ้น
+              ยินดีต้อนรับสู่แบบประเมินรสนิยมทางเพศแนว BDSM
+              ซึ่งจะช่วยให้คุณเข้าใจตัวคุณเองมากขึ้น
             </span>
           </div>
 
