@@ -59,7 +59,7 @@ const Summary: React.FC = () => {
   return (
     <div className="p-5 summary-container container mx-auto flex items-center flex-col">
       <Helmet>
-        <title>Kinky Journy: ผลลัพธ์แบบประเมิน ({cookies.NAME || "N/A"})</title>
+        <title>Kinky Journey: ผลลัพธ์แบบประเมิน ({cookies.NAME || "N/A"})</title>
       </Helmet>
       <div className="summary-content" id="summary-content">
         <div className="mb-5">

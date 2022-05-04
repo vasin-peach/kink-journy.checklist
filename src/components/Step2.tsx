@@ -66,7 +66,7 @@ const Step2 = () => {
   return (
     <div className="step1-container">
       <Helmet>
-        <title>Kinky Journy: 2.รูปแบบการเพลย์ที่เคยทำมาก่อน</title>
+        <title>Kinky Journey: 2.รูปแบบการเพลย์ที่เคยทำมาก่อน</title>
       </Helmet>
       <div className="checklist-header mb-5">
         <div className="font-bold text-xl text-center">

@@ -55,7 +55,7 @@ const Step1 = () => {
   return (
     <div className="step1-container">
       <Helmet>
-        <title>Kinky Journy: 1.แบบประเมินรสนิยมทางเพศของตัวเอง</title>
+        <title>Kinky Journey: 1.แบบประเมินรสนิยมทางเพศของตัวเอง</title>
       </Helmet>
       <div className="checklist-header mb-5">
         <div className="font-bold text-xl text-center">
