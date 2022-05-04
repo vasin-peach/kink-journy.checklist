@@ -13,7 +13,7 @@ interface IBdsmCheck {
 
 const Step1 = () => {
   const navigate = useNavigate();
-  const perPage = 5;
+  const perPage = 7;
   const [cookies, setCookie] = useCookies(["BDSM_ROLE", "BDSM_CHECKED"]);
   const [data, setData] = useState<IBdsmCheck[]>(bdsmCheckData);
   const [page, setPage] = useState<number>(1);
@@ -66,10 +66,10 @@ const Step1 = () => {
         <table className="table-auto w-full border border-collapse border-slate-500">
           <thead>
             <tr>
+              <th style={{ width: "50px" }}></th>
               <th></th>
-              <th></th>
-              <th>ใช่</th>
-              <th>ไม่ใช่</th>
+              <th style={{ width: "100px" }}>ใช่</th>
+              <th style={{ width: "100px" }}>ไม่ใช่</th>
             </tr>
           </thead>
           <tbody>

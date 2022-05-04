@@ -14,7 +14,7 @@ interface IUnDoneScene {
 
 const Step3 = () => {
   const navigate = useNavigate();
-  const perPage = 5;
+  const perPage = 7;
   const [cookies, setCookie, removeCookie] = useCookies([
     "UNDONE_BUT_WANT_TO_TRY_SCENE",
     "UNDONE_SCENE",

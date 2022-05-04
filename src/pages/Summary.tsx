@@ -11,18 +11,20 @@ const Summary: React.FC = () => {
   const [cookies, setCookie] = useCookies([
     "NAME",
     "BDSM_ROLE",
-    "LIKE_SCENE",
+    "DONE_LIKE_SCENE",
     "UNDONE_BUT_WANT_TO_TRY_SCENE",
+    "UNLIKE_SCENE",
   ]);
   const [likeScene, setLikeScene] = useState<string[]>([]);
   const [wantToTryScene, setWantToTryScene] = useState<string[]>([]);
+  const [dontWantToTryScene, setDontWantToTryScene] = useState<string[]>([]);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Methods                                  */
   /* -------------------------------------------------------------------------- */
   const fetchLikeScene = () => {
-    const likeScene: number[] = cookies.LIKE_SCENE;
-    if (!likeScene) setLikeScene(["N/A"]);
+    const likeScene: number[] = cookies.DONE_LIKE_SCENE;
+    if (!likeScene) return setLikeScene(["N/A"]);
 
     // find scene data using `LIKE_SCENE` index
     const likeSceneData = bdsmCheckScene
@@ -34,7 +36,7 @@ const Summary: React.FC = () => {
 
   const fetchWantToTryScene = () => {
     const wantToTryScene: number[] = cookies.UNDONE_BUT_WANT_TO_TRY_SCENE;
-    if (!wantToTryScene) setWantToTryScene(["N/A"]);
+    if (!wantToTryScene) return setWantToTryScene(["N/A"]);
 
     // find scene data using `UNDONE_BUT_WANT_TO_TRY_SCENE` index
     const wantToTrySceneData = bdsmCheckScene
@@ -42,6 +44,18 @@ const Summary: React.FC = () => {
       .map((i) => i.text);
 
     setWantToTryScene(wantToTrySceneData);
+  };
+
+  const fetchDontWantToTryScene = () => {
+    const dontWantToTryScene: number[] = cookies.UNLIKE_SCENE;
+    if (!dontWantToTryScene) return setDontWantToTryScene(["N/A"]);
+
+    // find scene data using `UNDONE_BUT_WANT_TO_TRY_SCENE` index
+    const dontWantToTrySceneData = bdsmCheckScene
+      .filter((i) => dontWantToTryScene.includes(i.id))
+      .map((i) => i.text);
+
+    setDontWantToTryScene(dontWantToTrySceneData);
   };
 
   const printPdf = () => {
@@ -52,14 +66,18 @@ const Summary: React.FC = () => {
   /*                                   Watches                                  */
   /* -------------------------------------------------------------------------- */
   useEffect(() => {
+    console.log(cookies);
     fetchLikeScene();
     fetchWantToTryScene();
+    fetchDontWantToTryScene();
   }, []);
 
   return (
     <div className="p-5 summary-container container mx-auto flex items-center flex-col">
       <Helmet>
-        <title>Kinky Journey: ผลลัพธ์แบบประเมิน ({cookies.NAME || "N/A"})</title>
+        <title>
+          Kinky Journey: ผลลัพธ์แบบประเมิน ({cookies.NAME || "N/A"})
+        </title>
       </Helmet>
       <div className="summary-content" id="summary-content">
         <div className="mb-5">
@@ -111,11 +129,27 @@ const Summary: React.FC = () => {
                 ))}
               </td>
             </tr>
+            <tr>
+              <td>
+                <b>ซีนเพลย์ที่เล่นแล้วไม่ชอบ</b>
+              </td>
+              <td>
+                {dontWantToTryScene.map((d, i) => (
+                  <div key={i}>
+                    {i + 1}. {d}
+                  </div>
+                ))}
+              </td>
+            </tr>
           </tbody>
         </table>
 
         <div className="mt-10 mx-auto">
-          <div className="font--bold text-xl mx-auto">
+          <hr className="my-5" />
+          <div
+            className="font--bold text-xl mx-auto"
+            style={{ maxWidth: "700px" }}
+          >
             BDSM
             เป็นเรื่องรสนิยมส่วนตัวซึ่งเปลี่ยนแปลงได้ขึ้นกับสภาพปัจจัยทั้งภายนอกภายใน
             ในวันข้างหน้าที่คุณกลับมาทำแบบประเมินนี้อีกครั้ง
@@ -136,7 +170,7 @@ const Summary: React.FC = () => {
       <button
         type="button"
         onClick={() => printPdf()}
-        className="button-pill mt-10"
+        className="button-pill mt-10 mb-10"
       >
         บันทึก
       </button>

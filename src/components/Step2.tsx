@@ -13,8 +13,13 @@ interface IBdsmCheckScene {
 
 const Step2 = () => {
   const navigate = useNavigate();
-  const perPage = 5;
-  const [cookies, setCookie] = useCookies(["LIKE_SCENE", "UNDONE_SCENE"]);
+  const perPage = 7;
+  const [cookies, setCookie] = useCookies([
+    "LIKE_SCENE",
+    "UNDONE_SCENE",
+    "UNLIKE_SCENE",
+    "DONE_LIKE_SCENE",
+  ]);
   const [data, setData] = useState<IBdsmCheckScene[]>(bdsmCheckScene);
   const [page, setPage] = useState<number>(1);
   const [selectData, setSelectData] = useState<IBdsmCheckScene[]>([]);
@@ -26,12 +31,19 @@ const Step2 = () => {
       const doneAndLike = await Promise.all(
         data.filter((i) => i.done && i.like).map((i) => i.id)
       );
+      const like = await Promise.all(
+        data.filter((i) => i.like).map((i) => i.id)
+      );
+      const unlike = await Promise.all(
+        data.filter((i) => !i.like).map((i) => i.id)
+      );
       const unDone = await Promise.all(
         data.filter((i) => !i.done).map((i) => i.id)
       );
 
-      console.log(unDone);
-      await setCookie("LIKE_SCENE", JSON.stringify(doneAndLike));
+      await setCookie("DONE_LIKE_SCENE", JSON.stringify(doneAndLike));
+      await setCookie("LIKE_SCENE", JSON.stringify(like));
+      await setCookie("UNLIKE_SCENE", JSON.stringify(unlike));
       await setCookie("UNDONE_SCENE", JSON.stringify(unDone));
 
       if (!unDone.length) return navigate("/summary");
@@ -49,11 +61,7 @@ const Step2 = () => {
     const index = data.findIndex((i) => i.id === select.id);
     const mock = [...data];
 
-    if (target === "like") {
-      mock[index][target] = mock[index][target] ? !mock[index][target] : true;
-    } else {
-      mock[index][target] = e.target.value === "yes" ? true : false;
-    }
+    mock[index][target] = e.target.value === "yes" ? true : false;
 
     setData(mock);
   };
@@ -79,15 +87,16 @@ const Step2 = () => {
             <tr>
               <th></th>
               <th></th>
-              <th>เคย</th>
-              <th>ไม่เคย</th>
-              <th>ชอบ</th>
+              <th style={{ width: "100px" }}>เคย</th>
+              <th style={{ width: "100px" }}>ไม่เคย</th>
+              <th style={{ width: "100px" }}>ชอบ</th>
+              <th style={{ width: "100px" }}>ไม่ชอบ</th>
             </tr>
           </thead>
           <tbody>
             {selectData.map((select, index) => (
               <tr key={`step1-${index}`} className="text-xl">
-                <td>{select.id}.</td>
+                <td width={50}>{select.id}.</td>
                 <td>{select.text}</td>
                 <td className="radio-pill w-10">
                   <input
@@ -113,12 +122,25 @@ const Step2 = () => {
                 </td>
                 <td className="radio-pill w-10">
                   <input
-                    type="checkbox"
-                    name={`radio-step2-${select.id}`}
+                    type="radio"
+                    name={`radio-step2-like-${select.id}`}
                     value="yes"
                     checked={select.like === true}
                     onChange={(e) => handleRadioChange(e, select, "like")}
-                    disabled={select.done !== true}
+                    disabled={select.done ? false : true}
+                    required
+                  />
+                  <span className="checkmark"></span>
+                </td>
+                <td className="radio-pill w-10">
+                  <input
+                    type="radio"
+                    name={`radio-step2-like-${select.id}`}
+                    value="no"
+                    checked={select.like === false}
+                    onChange={(e) => handleRadioChange(e, select, "like")}
+                    required
+                    disabled={select.done ? false : true}
                   />
                   <span className="checkmark"></span>
                 </td>
