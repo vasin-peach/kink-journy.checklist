@@ -109,8 +109,7 @@ const Step3 = () => {
                   <input
                     type="radio"
                     name={`radio-step3-${select.id}`}
-                    value="no"
-                    checked={select.wantToTry === false}
+                    checked={select.like}
                     onChange={(e) => handleRadioChange(e, select)}
                     required
                   />

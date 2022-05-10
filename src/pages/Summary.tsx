@@ -66,7 +66,6 @@ const Summary: React.FC = () => {
   /*                                   Watches                                  */
   /* -------------------------------------------------------------------------- */
   useEffect(() => {
-    console.log(cookies);
     fetchLikeScene();
     fetchWantToTryScene();
     fetchDontWantToTryScene();

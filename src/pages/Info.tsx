@@ -1,6 +1,7 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import checked from "../assets/images/checked.svg";
 
 const Info: React.FC = () => {
   const navigate = useNavigate();
@@ -47,8 +48,8 @@ const Info: React.FC = () => {
                     onChange={(e) => setName(e.target.value)}
                     required
                   />
-                  <button type="submit" className="text-pill-icon font-muzashi">
-                    /
+                  <button type="submit" className="text-pill-icon">
+                    <img src={checked} />
                   </button>
                 </div>
               </div>
