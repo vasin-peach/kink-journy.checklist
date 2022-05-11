@@ -149,13 +149,19 @@ const Summary: React.FC = () => {
             className="font--bold text-xl mx-auto"
             style={{ maxWidth: "700px" }}
           >
-            BDSM
-            เป็นเรื่องรสนิยมส่วนตัวซึ่งเปลี่ยนแปลงได้ขึ้นกับสภาพปัจจัยทั้งภายนอกภายใน
+            <div style={{ textIndent: "25px" }}>
+              Checklist
+              นี้เป็นการประเมินตัวเองเบื้องต้นสำหรับคนที่สนใจและอยากรู้จัก BDSM
+              ซึ่งรสนิยมส่วนบุคคลนี้สามารถเปลี่ยนแปลงได้เมื่อคุณรู้จัก BDSM
+              มากขึ้น
+            </div>
+            <br />
             ในวันข้างหน้าที่คุณกลับมาทำแบบประเมินนี้อีกครั้ง
-            อาจจะทำให้แปลกใจก็เป็นได้
+            อยากให้คุณมีความสุขในเส้นทาง BDSM ที่เลือก
           </div>
           <div className="font--bold text-xl mx-auto">
-            สนใจอยากรู้เพิ่ม ติดตาม{" "}
+            <br />
+            สนใจอยากเรียนรู้เพิ่มเติม ติดตามที่ twitter
             <a
               href="https://twitter.com/inner_taboo"
               className="text-primary"

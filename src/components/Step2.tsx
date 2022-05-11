@@ -9,6 +9,7 @@ interface IBdsmCheckScene {
   text: string;
   done?: boolean | undefined;
   like?: boolean | undefined;
+  unlike?: boolean | undefined;
   wantToTry?: boolean | undefined;
 }
 
@@ -37,7 +38,7 @@ const Step2 = () => {
         data.filter((i) => i.like).map((i) => i.id)
       );
       const unlike = await Promise.all(
-        data.filter((i) => !i.like).map((i) => i.id)
+        data.filter((i) => i.unlike).map((i) => i.id)
       );
       const unDone = await Promise.all(
         data.filter((i) => !i.done).map((i) => i.id)
@@ -45,6 +46,8 @@ const Step2 = () => {
       const wantToTry = await Promise.all(
         data.filter((i) => i.wantToTry).map((i) => i.id)
       );
+
+      console.log(data);
 
       await setCookie("DONE_LIKE_SCENE", JSON.stringify(doneAndLike));
       await setCookie("LIKE_SCENE", JSON.stringify(like));
@@ -62,9 +65,9 @@ const Step2 = () => {
   };
 
   const handleRadioChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement> | boolean,
     select: IBdsmCheckScene,
-    target: "done" | "like" | "wantToTry",
+    target: "done" | "like" | "wantToTry" | "unlike",
     mode: "radio" | "checkbox" = "radio"
   ) => {
     const index = data.findIndex((i) => i.id === select.id);
@@ -73,7 +76,8 @@ const Step2 = () => {
     if (mode === "checkbox") {
       mock[index][target] = mock[index][target] ? !mock[index][target] : true;
     } else {
-      mock[index][target] = e.target.value === "yes" ? true : false;
+      mock[index][target] =
+        (typeof e === "boolean" ? e : e.target.value) === "yes" ? true : false;
     }
 
     setData(mock);
@@ -103,6 +107,7 @@ const Step2 = () => {
               <th style={{ width: "100px" }}>เคย</th>
               <th style={{ width: "100px" }}>ไม่เคย</th>
               <th style={{ width: "100px" }}>ชอบ</th>
+              <th style={{ width: "100px" }}>ไม่ชอบ</th>
               <th style={{ width: "100px" }}>อยากลอง</th>
             </tr>
           </thead>
@@ -117,7 +122,16 @@ const Step2 = () => {
                     name={`radio-step2-${select.id}`}
                     value="yes"
                     checked={select.done === true}
-                    onChange={(e) => handleRadioChange(e, select, "done")}
+                    onChange={(e) => {
+                      handleRadioChange(e, select, "done");
+                      select.wantToTry &&
+                        handleRadioChange(
+                          false,
+                          select,
+                          "wantToTry",
+                          "checkbox"
+                        );
+                    }}
                     required
                   />
                   <span className="checkmark"></span>
@@ -128,7 +142,13 @@ const Step2 = () => {
                     name={`radio-step2-${select.id}`}
                     value="no"
                     checked={select.done === false}
-                    onChange={(e) => handleRadioChange(e, select, "done")}
+                    onChange={(e) => {
+                      handleRadioChange(e, select, "done");
+                      select.like &&
+                        handleRadioChange(false, select, "like", "checkbox");
+                      select.unlike &&
+                        handleRadioChange(false, select, "unlike", "checkbox");
+                    }}
                     required
                   />
                   <span className="checkmark"></span>
@@ -141,9 +161,22 @@ const Step2 = () => {
                     onChange={(e) =>
                       handleRadioChange(e, select, "like", "checkbox")
                     }
-                    disabled={select.done ? false : true}
+                    disabled={(select.done ? false : true) || select.unlike}
                   />
                   <span className="checkmark"></span>
+                </td>
+                <td className="radio-pill w-10">
+                  <input
+                    type="checkbox"
+                    name={`radio-step2-unlike-${select.id}`}
+                    checked={select.unlike === true}
+                    onChange={(e) => {
+                      handleRadioChange(e, select, "unlike", "checkbox");
+                    }}
+                    disabled={(select.done ? false : true) || select.like}
+                  />
+                  <span className="checkmark"></span>
+                  {/* {select.like ? "true" : "false"} */}
                 </td>
                 <td className="radio-pill w-10">
                   <input
