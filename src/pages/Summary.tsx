@@ -102,7 +102,7 @@ const Summary: React.FC = () => {
               <td>
                 <b>บทบาท</b>
               </td>
-              <td>{cookies.BDSM_ROLE || "N/A"}</td>
+              <td>{cookies.BDSM_ROLE?.toLowerCase() || "N/A"}</td>
             </tr>
             <tr>
               <td>
