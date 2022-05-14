@@ -1,125 +1,178 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import bdsmCheckData from "../assets/data/bdsm-check.data.json";
 import { Helmet } from "react-helmet";
+import { Container, Grid, Radio, Typography } from "@mui/material";
+import { useAppDispatch } from "../store/hook";
+import { updateLifeStyle } from "../store/slices/summary";
+import { getName, setStep } from "../store/slices/page";
+import { useSelector } from "react-redux";
 
-interface IBdsmCheck {
-  id: string | number;
-  text: string;
-  type: string;
-  check?: boolean | undefined;
+export interface IData {
+  id: number | string;
+  text: {
+    th: string;
+    en?: string;
+  };
+  type?: string;
+  value?: Record<string, string | boolean>;
 }
 
 const Step1 = () => {
+  /* -------------------------------------------------------------------------- */
+  /*                                   States                                   */
+  /* -------------------------------------------------------------------------- */
   const navigate = useNavigate();
-  const perPage = 7;
-  const [cookies, setCookie] = useCookies(["BDSM_ROLE", "BDSM_CHECKED"]);
-  const [data, setData] = useState<IBdsmCheck[]>(bdsmCheckData);
-  const [page, setPage] = useState<number>(1);
-  const [selectData, setSelectData] = useState<IBdsmCheck[]>([]);
+  const dispatch = useAppDispatch();
+  const perPage = 10;
+  const [data, setData] = useState<IData[]>(bdsmCheckData);
+  const [pageData, setPageData] = useState<IData[]>([]);
+  const [page, setPage] = useState<number>(0);
+  const name = useSelector(getName);
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   Methods                                  */
+  /* -------------------------------------------------------------------------- */
+  const updatePageData = () => {
+    setPageData(
+      Object.entries(data)
+        .slice(page * perPage, (page + 1) * perPage)
+        .map((item) => item[1])
+    );
+  };
+
+  const handleInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    id: string | number,
+    target: string,
+    mode: "radio" | "switch" = "radio"
+  ) => {
+    const index = data.findIndex((i) => i.id === id);
+    let value = e.target.value === "true" ? true : false;
+    if (mode === "switch" && data[index].value)
+      value =
+        e.target.value === "true" ? !(data[index].value as any)[target] : true;
+
+    await setData(
+      data.map((i) => {
+        return i.id === id
+          ? { ...i, value: { ...i.value, [target]: value } }
+          : i;
+      })
+    );
+  };
+
+  const isLastPage = () => {
+    return (page + 1) * perPage >= Object.keys(data).length;
+  };
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const headerElm = document.querySelector("#root");
+    headerElm?.scrollIntoView({ behavior: "smooth", block: "start" });
 
-    if (page * perPage >= data.length) {
-      const dom = data.filter((i) => i.type === "dom" && i.check).length;
-      const sub = data.filter((i) => i.type === "sub" && i.check).length;
-      const both = data.filter((i) => i.type === "switch" && i.check).length;
-      const checked = await Promise.all(data.map((i) => i.check));
-      const result = dom === sub ? "switch" : dom > sub ? "dom" : "sub";
-      await setCookie("BDSM_ROLE", `${result}`);
-      await setCookie("BDSM_CHECKED", JSON.stringify(checked));
-      navigate("/checklist/2");
-      return;
-    }
+    // save to store
+    dispatch(updateLifeStyle(data));
 
-    setPage(page + 1);
+    if (!isLastPage()) return setPage(page + 1);
+    navigate("/checklist/2");
   };
 
-  const handleRadioChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    select: IBdsmCheck
-  ) => {
-    const index = data.findIndex((i) => i.id === select.id);
-    const mock = [...data];
-    mock[index].check = e.target.value === "yes" ? true : false;
-    setData(mock);
-  };
-
+  /* -------------------------------------------------------------------------- */
+  /*                                   Watches                                  */
+  /* -------------------------------------------------------------------------- */
+  // page mounted
   useEffect(() => {
-    const t = data.slice((page - 1) * perPage, page * perPage);
-    setSelectData(t);
-  }, [page]);
+    if (!name) navigate("/info");
+
+    // on mounted
+    updatePageData();
+    dispatch(setStep(0));
+
+    // on un-mounted
+    return () => {
+      setPage(0);
+      updatePageData();
+    };
+  }, []);
+
+  // page changed
+  useEffect(() => {
+    updatePageData();
+  }, [page, data]);
 
   return (
-    <div className="step1-container">
+    <div className="step-container">
       <Helmet>
         <title>Kinky Journey: 1.แบบประเมินรสนิยมทางเพศของตัวเอง</title>
       </Helmet>
-      <div className="checklist-header mb-5">
-        <div className="font-bold text-xl text-center">
-          1. แบบประเมินรสนิยมทางเพศของตัวเอง
-        </div>
-      </div>
-      <form onSubmit={handleSave}>
-        <table className="table-auto w-full border border-collapse border-slate-500">
-          <thead>
-            <tr>
-              <th style={{ width: "50px" }}></th>
-              <th></th>
-              <th style={{ width: "100px" }}>ใช่</th>
-              <th style={{ width: "100px" }}>ไม่ใช่</th>
-            </tr>
-          </thead>
-          <tbody>
-            {selectData.map((select, index) => (
-              <tr key={`step1-${index}`} className="text-xl">
-                <td>{select.id}.</td>
-                <td>{select.text}</td>
-                <td className="radio-pill w-10">
-                  <input
-                    type="radio"
-                    name={`radio-step1-${select.id}`}
-                    value="yes"
-                    checked={select.check === true}
-                    onChange={(e) => handleRadioChange(e, select)}
-                    required
-                  />
-                  <span className="checkmark"></span>
-                </td>
-                <td className="radio-pill w-10">
-                  <input
-                    type="radio"
-                    name={`radio-step1-${select.id}`}
-                    value="no"
-                    checked={select.check === false}
-                    onChange={(e) => handleRadioChange(e, select)}
-                    required
-                  />
-                  <span className="checkmark"></span>
-                </td>
-              </tr>
-            ))}
-            <tr></tr>
-          </tbody>
-        </table>
-        <div className="mt-10 flex justify-center">
-          {page > 1 && (
-            <button
-              type="button"
-              onClick={() => setPage(page - 1)}
-              className="button-pill mr-5"
-            >
-              ย้อนกลับ
-            </button>
-          )}
 
-          <button type="submit" className="button-pill">
-            {page * perPage >= data.length ? "บันทึก" : "ต่อไป"}
-          </button>
-        </div>
-      </form>
+      <div className="step-content">
+        <form onSubmit={handleSave}>
+          <Container>
+            <Grid container>
+              {pageData.map((item, index) => (
+                <Grid item key={index} xs={12} className="step-content-row">
+                  <Grid container>
+                    <Grid item xs={12} md={9}>
+                      <Typography variant="body1">
+                        {item.id}. {item.text.th}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={3}>
+                      <hr className="my-2 block md:hidden" />
+                      <div className="flex justify-center lg:justify-end pr-2">
+                        <div>
+                          <Radio
+                            name={`radio-step-${item.id}`}
+                            value="true"
+                            checked={item.value?.interest === true}
+                            onChange={(e) =>
+                              handleInputChange(e, item.id, "interest")
+                            }
+                            required
+                          />
+                          <span>ใช่</span>
+                        </div>
+                        <div>
+                          <Radio
+                            name={`radio-step-${item.id}`}
+                            value="false"
+                            checked={item.value?.interest === false}
+                            onChange={(e) =>
+                              handleInputChange(e, item.id, "interest")
+                            }
+                            required
+                          />
+                          <span>ไม่ใช่</span>
+                        </div>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              ))}
+            </Grid>
+
+            <hr className="my-5" />
+            <div className="flex justify-center  pb-10">
+              {page >= 1 && (
+                <button
+                  type="button"
+                  onClick={() => setPage(page - 1)}
+                  className="button-pill mr-5"
+                >
+                  ย้อนกลับ
+                </button>
+              )}
+
+              <button type="submit" className="button-pill">
+                {isLastPage() ? "บันทึก" : "ต่อไป"}
+              </button>
+            </div>
+          </Container>
+        </form>
+      </div>
     </div>
   );
 };

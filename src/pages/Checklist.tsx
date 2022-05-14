@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import ChecklistHeader from "../components/checklist/ChecklistHeader";
 
 const Checklist: React.FC = () => {
+  const [activeStep, setActiveStep] = useState(0);
+
   return (
-    <div className="checklist-container container mx-auto flex-col">
-      <div className="checklist-content mt-5 pb-20">
+    <div className="checklist-container mx-auto flex-col">
+      <ChecklistHeader activeStep={activeStep} />
+      <div className="checklist-content-container pt-10">
         <Outlet />
       </div>
     </div>

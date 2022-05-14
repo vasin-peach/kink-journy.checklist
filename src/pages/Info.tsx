@@ -2,21 +2,21 @@ import React, { FormEvent, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import checked from "../assets/images/checked.svg";
+import { useAppDispatch } from "../store/hook";
+import { setName } from "../store/slices/page";
 
 const Info: React.FC = () => {
   const navigate = useNavigate();
-  const [cookies, setCookie, removeCookie] = useCookies(["NAME"]);
-  const [name, setName] = useState<string>(document.cookie);
+  const dispatch = useAppDispatch();
+  const [name, updateName] = useState<string>(document.cookie);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setCookie("NAME", name);
+    dispatch(setName(name));
     navigate("/checklist/1");
   };
 
-  useEffect(() => {
-    if (cookies.NAME) setName(cookies.NAME);
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div className="h-full">
@@ -45,7 +45,7 @@ const Info: React.FC = () => {
                     type="text"
                     className="text-pill"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => updateName(e.target.value)}
                     required
                   />
                   <button type="submit" className="text-pill-icon">

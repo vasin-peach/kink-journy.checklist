@@ -1,5 +1,28 @@
 .button-pill {
   @apply rounded-full font-bold;
+  position: relative;
+  background-color: #fff !important;
+  padding: 10px 50px;
+  color: theme("colors.primary");
+  /* transition: box-shadow 0.3s ease-out; */
+
+  /* &:hover {
+    box-shadow: 1px 1px 15px #eee;
+  } */
+  &:after {
+    content: "";
+    position: absolute;
+    left: -5px;
+    right: -5px;
+    top: -5px;
+    bottom: -5px;
+    border: 1px solid #fff;
+    @apply rounded-full;
+  }
+}
+
+.button-pill-light {
+  border-radius: 50px;
   box-shadow: 1px 1px 15px #d9d9d9;
   padding: 10px 50px;
   color: theme("colors.primary");

@@ -3,180 +3,190 @@ import { useCookies } from "react-cookie";
 import bdsmCheckScene from "../assets/data/bdsm-check.scene.json";
 import printJS from "print-js";
 import { Helmet } from "react-helmet";
+import { useAppDispatch } from "../store/hook";
+import { getName, setStep } from "../store/slices/page";
+import { useSelector } from "react-redux";
+import {
+  getLifeStyle,
+  getLikeScene,
+  getPlayScene,
+  getRole,
+  getUnlikeScene,
+  getWantToTryScene,
+} from "../store/slices/summary";
+import {
+  Grid,
+  List,
+  ListItem,
+  Paper,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const Summary: React.FC = () => {
   /* -------------------------------------------------------------------------- */
   /*                                   States                                   */
   /* -------------------------------------------------------------------------- */
-  const [cookies, setCookie] = useCookies([
-    "NAME",
-    "BDSM_ROLE",
-    "DONE_LIKE_SCENE",
-    "UNDONE_BUT_WANT_TO_TRY_SCENE",
-    "UNLIKE_SCENE",
-  ]);
-  const [likeScene, setLikeScene] = useState<string[]>([]);
-  const [wantToTryScene, setWantToTryScene] = useState<string[]>([]);
-  const [dontWantToTryScene, setDontWantToTryScene] = useState<string[]>([]);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const role = useSelector(getRole);
+  const name = useSelector(getName);
+  const likeScene = useSelector(getLikeScene);
+  const wantToTryScene = useSelector(getWantToTryScene);
+  const unlikeScene = useSelector(getUnlikeScene);
+  const lifeStyle = useSelector(getLifeStyle);
+  const playScene = useSelector(getPlayScene);
+  const matches = useMediaQuery("(max-width:600px)");
 
   /* -------------------------------------------------------------------------- */
   /*                                   Methods                                  */
   /* -------------------------------------------------------------------------- */
-  const fetchLikeScene = () => {
-    const likeScene: number[] = cookies.DONE_LIKE_SCENE;
-    if (!likeScene) return setLikeScene(["N/A"]);
-
-    // find scene data using `LIKE_SCENE` index
-    const likeSceneData = bdsmCheckScene
-      .filter((i) => likeScene.includes(i.id))
-      .map((i) => i.text);
-
-    setLikeScene(likeSceneData);
-  };
-
-  const fetchWantToTryScene = () => {
-    const wantToTryScene: number[] = cookies.UNDONE_BUT_WANT_TO_TRY_SCENE;
-    if (!wantToTryScene) return setWantToTryScene(["N/A"]);
-
-    // find scene data using `UNDONE_BUT_WANT_TO_TRY_SCENE` index
-    const wantToTrySceneData = bdsmCheckScene
-      .filter((i) => wantToTryScene.includes(i.id))
-      .map((i) => i.text);
-
-    setWantToTryScene(wantToTrySceneData);
-  };
-
-  const fetchDontWantToTryScene = () => {
-    const dontWantToTryScene: number[] = cookies.UNLIKE_SCENE;
-    if (!dontWantToTryScene) return setDontWantToTryScene(["N/A"]);
-
-    // find scene data using `UNDONE_BUT_WANT_TO_TRY_SCENE` index
-    const dontWantToTrySceneData = bdsmCheckScene
-      .filter((i) => dontWantToTryScene.includes(i.id))
-      .map((i) => i.text);
-
-    setDontWantToTryScene(dontWantToTrySceneData);
-  };
 
   const printPdf = () => {
-    printJS("summary-content", "html");
+    if (matches) return window.print();
+
+    const elm = document.getElementById("summary-content");
+    if (!elm) return;
+
+    const height = elm.offsetHeight;
+    html2canvas(elm, {
+      scale: 3,
+    }).then((canvas) => {
+      //Returns the image data URL, parameter: image format and clarity (0-1)
+      const pageData = canvas.toDataURL("image/jpeg", 1.0);
+
+      //Default vertical direction, size ponits, format a4[595.28,841.89]
+      const pdf = new jsPDF("portrait", "pt", "a4");
+
+      //Two parameters after addImage control the size of the added image, where the page height is compressed according to the width-height ratio column of a4 paper.
+      pdf.addImage(
+        pageData,
+        "JPEG",
+        0,
+        0,
+        595.28,
+        (592.28 / canvas.width) * canvas.height
+      );
+
+      pdf.save(`Kinky Journey: ผลลัพธ์แบบประเมิน (${name || "N/A"}).pdf`);
+    });
   };
 
   /* -------------------------------------------------------------------------- */
   /*                                   Watches                                  */
   /* -------------------------------------------------------------------------- */
   useEffect(() => {
-    fetchLikeScene();
-    fetchWantToTryScene();
-    fetchDontWantToTryScene();
+    dispatch(setStep(2));
+
+    if (!lifeStyle.length || !playScene.length) navigate("/checklist/1");
+    console.log(unlikeScene);
   }, []);
 
   return (
     <div className="p-5 summary-container container mx-auto flex items-center flex-col">
       <Helmet>
-        <title>
-          Kinky Journey: ผลลัพธ์แบบประเมิน ({cookies.NAME || "N/A"})
-        </title>
+        <title>Kinky Journey: ผลลัพธ์แบบประเมิน ({name || "N/A"})</title>
       </Helmet>
-      <div className="summary-content" id="summary-content">
-        <div className="mb-5">
-          <div className="font-bold text-xl text-center">
-            ผลลัพธ์แบบประเมินรสนิยม BDSM
-          </div>
-        </div>
-        <table className="table-auto border mx-auto">
-          <tbody>
-            <tr>
-              <td>
-                <b>วันที่ทำการประเมิน</b>
-              </td>
-              <td>{new Date().toLocaleDateString()}</td>
-            </tr>
-            <tr>
-              <td>
-                <b>ชื่อ</b>
-              </td>
-              <td>{cookies.NAME || "N/A"}</td>
-            </tr>
-            <tr>
-              <td>
-                <b>บทบาท</b>
-              </td>
-              <td>
-                {(cookies.BDSM_ROLE &&
-                  (cookies.BDSM_ROLE === "dom"
-                    ? "DOM"
-                    : cookies.BDSM_ROLE === "sub"
-                    ? "sub"
-                    : "Switch")) ||
-                  "N/A"}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <b>ซีนเพลย์ที่ชอบ</b>
-              </td>
-              <td>
-                {likeScene.map((d, i) => (
-                  <div key={i}>
-                    {i + 1}. {d}
-                  </div>
-                ))}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <b>ซีนเพลย์ที่อยากลอง</b>
-              </td>
-              <td>
-                {wantToTryScene.map((d, i) => (
-                  <div key={i}>
-                    {i + 1}. {d}
-                  </div>
-                ))}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <b>ซีนเพลย์ที่เล่นแล้วไม่ชอบ</b>
-              </td>
-              <td>
-                {dontWantToTryScene.map((d, i) => (
-                  <div key={i}>
-                    {i + 1}. {d}
-                  </div>
-                ))}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
+      <div
+        className="summary-content"
+        id="summary-content"
+        style={{ borderRadius: "15px", background: "#fff", padding: "15px" }}
+      >
         <div className="mt-10 mx-auto">
-          <hr className="my-5" />
-          <div
-            className="font--bold text-xl mx-auto"
-            style={{ maxWidth: "700px" }}
+          <TableContainer
+            component={Paper}
+            sx={{ width: "100%" }}
+            id="output"
+            className="output"
           >
-            <div style={{ textIndent: "25px" }}>
-              Checklist
-              นี้เป็นการประเมินตัวเองเบื้องต้นสำหรับคนที่สนใจและอยากรู้จัก BDSM
-              ซึ่งรสนิยมส่วนบุคคลนี้สามารถเปลี่ยนแปลงได้เมื่อคุณรู้จัก BDSM
-              มากขึ้น
-            </div>
+            <TableBody>
+              <TableRow>
+                <TableCell className="w-1/4">วันที่ทำการประเมิน</TableCell>
+                <TableCell className="w-2/4">
+                  {new Date().toLocaleDateString()}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>ชื่อ</TableCell>
+                <TableCell>{name || "ไม่มีข้อมูล"}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>บทบาท</TableCell>
+                <TableCell>{role || "ไม่มีข้อมูล"}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>ซีนเพลย์ที่ชอบ</TableCell>
+                <TableCell>
+                  <Typography variant="body2">
+                    <Grid container>
+                      {likeScene.map((item, index) => (
+                        <Grid item xs={12} md={6} lg={4}>
+                          <b>{index + 1}</b>. {item.text.th}
+                        </Grid>
+                      )) || "ไม่มีข้อมูล"}
+                    </Grid>
+                  </Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>ซีนเพลย์ที่อยากลอง</TableCell>
+                <TableCell>
+                  {wantToTryScene.map((item, index) => (
+                    <Typography variant="body2">
+                      {index + 1}. {item.text.th}
+                    </Typography>
+                  )) || "ไม่มีข้อมูล"}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>ซีนเพลย์ที่เล่นแล้วไม่ชอบ</TableCell>
+                <TableCell>
+                  {unlikeScene.map((item, index) => (
+                    <Typography variant="body2">
+                      {index + 1}. {item.text.th}
+                    </Typography>
+                  )) || "ไม่มีข้อมูล"}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </TableContainer>
+          <div className="font--bold text-xl mx-auto mt-10 text-center">
+            <Typography variant="body1" sx={{ textIndent: "25px" }}>
+              <span>
+                Checklist
+                นี้เป็นการประเมินตัวเองเบื้องต้นสำหรับคนที่สนใจและอยากรู้จัก
+                BDSM ซึ่งรสนิยมส่วนบุคคลนี้สามารถเปลี่ยนแปลงได้เมื่อคุณรู้จัก
+                BDSM มากขึ้น
+              </span>
+              <span>
+                ในวันข้างหน้าที่คุณกลับมาทำแบบประเมินนี้อีกครั้ง
+                อยากให้คุณมีความสุขในเส้นทาง BDSM ที่เลือก
+              </span>
+            </Typography>
             <br />
-            ในวันข้างหน้าที่คุณกลับมาทำแบบประเมินนี้อีกครั้ง
-            อยากให้คุณมีความสุขในเส้นทาง BDSM ที่เลือก
+            <Typography variant="body1">
+              <div>
+                สนใจอยากเรียนรู้เพิ่มเติม ติดตามที่ twitter
+                <a
+                  href="https://twitter.com/inner_taboo"
+                  className="text-primary"
+                  target="_blank"
+                >
+                  @inner_taboo
+                </a>
+              </div>
+            </Typography>
+            <br />
           </div>
           <div className="font--bold text-xl mx-auto">
             <br />
-            สนใจอยากเรียนรู้เพิ่มเติม ติดตามที่ twitter
-            <a
-              href="https://twitter.com/inner_taboo"
-              className="text-primary"
-              target="_blank"
-            >
-              @inner_taboo
-            </a>
           </div>
         </div>
       </div>

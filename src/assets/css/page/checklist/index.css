@@ -1,1 +1,30 @@
-@import "./step1";
+.checklist-container {
+  background: #201d24;
+  min-height: calc(100% - 56px);
+
+  .checklist-header-container {
+    margin: auto;
+    padding: 30px 5px;
+    background: #fff;
+  }
+
+  .checklist-content-cotnainer {
+  }
+  .step-content {
+    color: #eee !important;
+
+    .step-content-row {
+      padding: 10px 5px !important;
+      &:nth-child(odd) {
+        background: #292530;
+      }
+
+      .MuiRadio-root:not(.Mui-checked),
+      .MuiCheckbox-root:not(.Mui-checked) {
+        svg {
+          color: #e3f2fd;
+        }
+      }
+    }
+  }
+}

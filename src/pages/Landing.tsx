@@ -7,7 +7,7 @@ const Landing: React.FC = () => {
       <div className="p-5 container mx-auto landing-container text-center perfect-center">
         <div className="wrapper">
           <div className="brand">
-            <div className="text-9xl">BDSM</div>
+            <div className="text-9xl ">BDSM</div>
             <div className="text-4xl underline underline-offset-4">
               Online Checklist
             </div>
@@ -21,7 +21,7 @@ const Landing: React.FC = () => {
           </div>
 
           <div className="submit mt-16">
-            <Link role="button" to="/info" className="button-pill">
+            <Link role="button" to="/info" className="button-pill-light">
               ต่อไป
             </Link>
           </div>
