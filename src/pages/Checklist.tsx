@@ -7,7 +7,7 @@ const Checklist: React.FC = () => {
 
   return (
     <div className="checklist-container mx-auto flex-col">
-      <ChecklistHeader activeStep={activeStep} />
+      <ChecklistHeader />
       <div className="checklist-content-container pt-10">
         <Outlet />
       </div>
