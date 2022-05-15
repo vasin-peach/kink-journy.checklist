@@ -166,9 +166,9 @@ const Step2 = () => {
                             name={`radio-step-${item.id}`}
                             value="true"
                             checked={item.value?.done === true}
-                            onChange={(e) =>
-                              handleInputChange(e, item.id, "done")
-                            }
+                            onChange={(e) => {
+                              handleInputChange(e, item.id, "done");
+                            }}
                             required
                           />
                           <span>เคย</span>
@@ -196,30 +196,33 @@ const Step2 = () => {
                                 name={`radio-step-${item.id}`}
                                 value="true"
                                 checked={item.value?.like === true}
-                                onChange={(e) =>
+                                disabled={item.value?.unlike as boolean}
+                                onChange={(e) => {
                                   handleInputChange(
                                     e,
                                     item.id,
                                     "like",
                                     "switch"
-                                  )
-                                }
+                                  );
+                                }}
                               />
                               <span>ชอบ</span>
                             </div>
                             <div>
+                              {item.value?.like}
                               <Checkbox
                                 name={`checkbox-step-${item.id}`}
                                 value="true"
                                 checked={item.value?.unlike === true}
-                                onChange={(e) =>
+                                disabled={item.value?.like as boolean}
+                                onChange={(e) => {
                                   handleInputChange(
                                     e,
                                     item.id,
                                     "unlike",
                                     "switch"
-                                  )
-                                }
+                                  );
+                                }}
                               />
                               <span>ไม่ชอบ</span>
                             </div>

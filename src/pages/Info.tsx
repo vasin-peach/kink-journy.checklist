@@ -8,7 +8,7 @@ import { setName } from "../store/slices/page";
 const Info: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [name, updateName] = useState<string>(document.cookie);
+  const [name, updateName] = useState<string>("");
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
