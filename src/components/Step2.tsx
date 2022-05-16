@@ -150,6 +150,16 @@ const Step2 = () => {
         <form onSubmit={handleSave}>
           <Container>
             <Grid container>
+              <Grid
+                item
+                className="step-content-row"
+                sx={{ width: "100%", textAlign: "right" }}
+                style={{ background: "none" }}
+              >
+                <Radio disabled />= จำเป็นต้องติ๊ก (Required)
+                <Checkbox disabled />= ไม่จำเป็นต้องติ๊ก (Optional)
+                <hr />
+              </Grid>
               {pageData.map((item, index) => (
                 <Grid item key={index} xs={12} className="step-content-row">
                   <Grid container>
